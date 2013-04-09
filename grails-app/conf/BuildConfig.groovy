@@ -4,7 +4,7 @@ grails.project.test.class.dir = "target/test-classes"
 grails.project.test.reports.dir = "target/test-reports"
 grails.project.target.level = 1.6
 grails.project.source.level = 1.6
-//grails.project.war.file = "target/${appName}-${appVersion}.war"
+grails.project.war.file = "target/${appName}.war"
 
 // uncomment (and adjust settings) to fork the JVM to isolate classpaths
 //grails.project.fork = [
@@ -42,22 +42,22 @@ grails.project.dependency.resolution = {
         // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes e.g.
 
         // runtime 'mysql:mysql-connector-java:5.1.22'
+        test "org.spockframework:spock-grails-support:0.7-groovy-2.0"
     }
 
     plugins {
         runtime ":hibernate:$grailsVersion"
         runtime ":jquery:1.8.3"
         runtime ":resources:1.1.6"
-
-        // Uncomment these (or add new ones) to enable additional resources capabilities
-        //runtime ":zipped-resources:1.0"
-        //runtime ":cached-resources:1.0"
-        //runtime ":yui-minify-resources:0.1.5"
+        runtime ":database-migration:1.3.2"
 
         build ":tomcat:$grailsVersion"
 
-        runtime ":database-migration:1.3.2"
+        compile ":cache:1.0.1"
 
-        compile ':cache:1.0.1'
+        test ":code-coverage:1.2.6"
+        test(":spock:0.7") {
+            exclude "spock-grails-support"
+        }
     }
 }
