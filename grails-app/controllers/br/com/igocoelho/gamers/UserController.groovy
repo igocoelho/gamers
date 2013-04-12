@@ -6,10 +6,6 @@ class UserController {
 
     static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
 
-    def index() {
-        redirect(action: "list", params: params)
-    }
-
     def list(Integer max) {
         params.max = Math.min(max ?: 10, 100)
         [userInstanceList: User.list(params), userInstanceTotal: User.count()]
@@ -21,35 +17,22 @@ class UserController {
 
     def save() {
         def userInstance = new User(params)
-        if (!userInstance.save(flush: true)) {
+        if (userInstance.save(flush: true)) {
+            flash.message = message(code: 'default.created.message', args: [message(code: 'user.label', default: 'User'), userInstance.id])
+            redirect(action: "create")
+        } else {
             render(view: "create", model: [userInstance: userInstance])
-            return
         }
-
-        flash.message = message(code: 'default.created.message', args: [message(code: 'user.label', default: 'User'), userInstance.id])
-        redirect(action: "show", id: userInstance.id)
-    }
-
-    def show(Long id) {
-        def userInstance = User.get(id)
-        if (!userInstance) {
-            flash.message = message(code: 'default.not.found.message', args: [message(code: 'user.label', default: 'User'), id])
-            redirect(action: "list")
-            return
-        }
-
-        [userInstance: userInstance]
     }
 
     def edit(Long id) {
         def userInstance = User.get(id)
-        if (!userInstance) {
+        if (userInstance) {
+            [userInstance: userInstance]
+        } else {
             flash.message = message(code: 'default.not.found.message', args: [message(code: 'user.label', default: 'User'), id])
             redirect(action: "list")
-            return
         }
-
-        [userInstance: userInstance]
     }
 
     def update(Long id, Long version) {
@@ -71,32 +54,28 @@ class UserController {
         }
 
         userInstance.properties = params
-
-        if (!userInstance.save(flush: true)) {
+        if (userInstance.save(flush: true)) {
+            flash.message = message(code: 'default.updated.message', args: [message(code: 'user.label', default: 'User'), userInstance.id])
+            redirect(action: "list")
+        } else {
             render(view: "edit", model: [userInstance: userInstance])
-            return
         }
-
-        flash.message = message(code: 'default.updated.message', args: [message(code: 'user.label', default: 'User'), userInstance.id])
-        redirect(action: "show", id: userInstance.id)
     }
 
     def delete(Long id) {
         def userInstance = User.get(id)
-        if (!userInstance) {
+        if (userInstance) {
+            try {
+                userInstance.delete(flush: true)
+                flash.message = message(code: 'default.deleted.message', args: [message(code: 'user.label', default: 'User'), id])
+            }
+            catch (DataIntegrityViolationException e) {
+                flash.message = message(code: 'default.not.deleted.message', args: [message(code: 'user.label', default: 'User'), id])
+            }            
+        } else {
             flash.message = message(code: 'default.not.found.message', args: [message(code: 'user.label', default: 'User'), id])
-            redirect(action: "list")
-            return
         }
 
-        try {
-            userInstance.delete(flush: true)
-            flash.message = message(code: 'default.deleted.message', args: [message(code: 'user.label', default: 'User'), id])
-            redirect(action: "list")
-        }
-        catch (DataIntegrityViolationException e) {
-            flash.message = message(code: 'default.not.deleted.message', args: [message(code: 'user.label', default: 'User'), id])
-            redirect(action: "show", id: id)
-        }
+        redirect(action: "list")
     }
 }
