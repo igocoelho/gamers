@@ -1,5 +1,4 @@
 <%@ page import="br.com.igocoelho.gamers.User" %>
-<!DOCTYPE html>
 <html>
 	<head>
 		<meta name="layout" content="main">
@@ -10,30 +9,45 @@
 	</head>
 	<body>
 
-	<h3><g:message code="default.list.label" args="[entityName]" /></h3>
-
-	<g:if test="${flash.message}">
-	<div class="message" role="status">${flash.message}</div>
-	</g:if>
+	<div class="title">
+		<h3><g:message code="default.list.label" args="[entityName]" /></h3>
+		<g:link action="create" class="btn">
+			<g:message code="default.create.label" args="[entityName]" />
+		</g:link>
+	</div>
 
 	<table class="table table-striped">
 		<thead>
 			<tr>
-				<td><g:message code="user.name.label" /></td>
-				<td><g:message code="user.login.label" /></td>
-				<td><g:message code="user.email.label" /></td>
-				<td><g:message code="user.facebook.label" /></td>
-				<td><g:message code="user.twitter.label" /></td>
+				<td><b><g:message code="user.name.label" /></b></td>
+				<td><b><g:message code="user.login.label" /></b></td>
+				<td><b><g:message code="user.email.label" /></b></td>
+				<th>&nbsp;</th>
 			</tr>
 		</thead>
 		<tbody>
 			<g:each in="${userInstanceList}" var="userInstance">
 			<tr>
-				<td>${fieldValue(bean: userInstance, field: "name")}</td>
+				<td>
+					${fieldValue(bean: userInstance, field: "name")}&nbsp;
+					<a target="_blank" href="${fieldValue(bean: userInstance, field: "facebook")}">
+						<img src="${resource(dir: 'images', file: 'icon-facebook.png')}">
+					</a>&nbsp;
+					<a target="_blank" href="${fieldValue(bean: userInstance, field: "twitter")}">
+						<img src="${resource(dir: 'images', file: 'icon-twitter.png')}">
+					</a>
+				</td>
 				<td>${fieldValue(bean: userInstance, field: "login")}</td>
 				<td>${fieldValue(bean: userInstance, field: "email")}</td>
-				<td>${fieldValue(bean: userInstance, field: "facebook")}</td>
-				<td>${fieldValue(bean: userInstance, field: "twitter")}</td>
+				<td class="cmdcolumn">
+        			<g:link action="edit" id="${userInstance.id}">
+        				<i class="icon-edit" title="${message(code:'default.button.edit.label')}"></i>
+        			</g:link>
+					&nbsp;
+        			<g:link action="delete" id="${userInstance.id}">
+        				<i class="icon-remove" title="${message(code:'default.button.delete.label')}"></i>
+        			</g:link>
+      			</td>
 			</tr>
 			</g:each>
 		</tbody>

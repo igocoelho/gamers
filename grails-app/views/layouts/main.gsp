@@ -8,19 +8,7 @@
 		<link rel="shortcut icon" href="${resource(dir: 'images', file: 'favicon.gif')}" type="image/x-icon">
 		<link rel="apple-touch-icon" href="${resource(dir: 'images', file: 'apple-touch-icon.png')}">
 		<link rel="apple-touch-icon" sizes="114x114" href="${resource(dir: 'images', file: 'apple-touch-icon-retina.png')}">
-		<style type="text/css">
-			body {
-				padding-top: 40px;
-				padding-bottom: 40px;
-			}
-			.container-narrow {
-				margin: 0 auto;
-				max-width: 700px;
-			}
-			.container-narrow > hr {
-				margin: 30px 0;
-			}
-	    </style>
+		<link rel="stylesheet" href="${resource(dir:'css',file:'main.css')}">
 		<g:layoutHead/>
 		<r:layoutResources />
 	</head>
@@ -51,6 +39,15 @@
     </div>
 
 	<div class="container-narrow">
+
+		<g:if test="${flash.message}">
+		<div class="alert alert-info">${flash.message}</div>
+		</g:if>
+
+		<g:if test="${flash.error}">
+		<div class="alert alert-error" role="status">${flash.error}</div>
+		</g:if>
+
 		<g:layoutBody/>
 
 		<div class="footer">
